@@ -1,0 +1,66 @@
+{
+  "ID": 1,
+  "Name": "Palanpur City",
+  "SubStations": [
+    {
+      "ID": 1,
+      "Name": "66 KV 1",
+      "Feeders": [
+        {
+          "ID": 1,
+          "Name": "City Feeder 1"
+        },
+        {
+          "ID": 2,
+          "Name": "Ramlila Feeder"
+        }
+      ]
+    },
+    {
+      "ID": 2,
+      "Name": "66 KV 2",
+      "Feeders": [
+        {
+          "ID": 3,
+          "Name": "Mansarovar Feeder"
+        },
+        {
+          "ID": 4,
+          "Name": "Miragate Feeder"
+        },
+        {
+          "ID": 5,
+          "Name": "Aabetha Feeder"
+        },
+        {
+          "ID": 6,
+          "Name": "Kasba Feeder"
+        }
+      ]
+    },
+    {
+      "ID": 3,
+      "Name": "Lalavada",
+      "Feeders": [
+        {
+          "ID": 7,
+          "Name": "I.T.T Feeder"
+        },
+        {
+          "ID": 8,
+          "Name": "Cattle Feeder"
+        },
+        {
+          "ID": 9,
+          "Name": "Jagana Feeder"
+        },
+        {
+          "ID": 10,
+          "Name": "Ganesh Feeder"
+        }
+      ]
+    }
+  ]
+}
+  
+  
