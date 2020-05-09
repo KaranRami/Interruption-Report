@@ -6,7 +6,9 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
+using static Xamarin.Essentials.Permissions;
 
 namespace InterruptionReport.ViewModel
 {
@@ -34,6 +36,7 @@ namespace InterruptionReport.ViewModel
 
             return true;
         }
+
         public async Task SingleRun(Func<Task> operation)
         {
             object _lock = new object();
@@ -55,7 +58,26 @@ namespace InterruptionReport.ViewModel
             }
             CommandInitiated = false;
         }
+        public async Task<bool> AskForPermission<T>(T permission) where T : BasePermission
+        {
+            try
+            {
+                var status = await permission.CheckStatusAsync();
+                if (status != PermissionStatus.Granted)
+                {
+                    status = await permission.RequestAsync();
+                }
 
+
+                return status == PermissionStatus.Granted;
+
+            }
+            catch (Exception ex)
+            {
+                await BaseContent.DisplayAlert("Error:", ex.Message, "OK");
+                return false;
+            }
+        }
         public void WriteExceptionToConsole(Exception e, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string callerfile = null, [CallerMemberName] string caller = null)
         {
             Debug.WriteLine("Exception thrown in: " + callerfile + " at position- Line No:" + lineNumber + ", Caller Member:" + caller + ", Message:" + e.Message);

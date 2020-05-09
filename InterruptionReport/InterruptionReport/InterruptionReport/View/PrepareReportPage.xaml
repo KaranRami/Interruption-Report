@@ -1,23 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="InterruptionReport.View.AddInterruptionPage"
+    x:Class="InterruptionReport.View.PrepareReportPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:d="http://xamarin.com/schemas/2014/forms/design"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="{Binding CurrentInterruption.SubDivision.Name}"
+    Title="Generate Report"
     Padding="20"
     mc:Ignorable="d">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding PrepareReportCommand}" Text="Report">
-            <ToolbarItem.IconImageSource>
-                <FontImageSource
-                    FontFamily="{StaticResource FontAwesomeSolidFree}"
-                    Glyph="&#xf6dd;"
-                    Size="24" />
-            </ToolbarItem.IconImageSource>
-        </ToolbarItem>
-        <ToolbarItem Command="{Binding SaveNewInterruptionCommand}" Text="Save">
+        <ToolbarItem Command="{Binding CustomQueryCommand}" />
+        <ToolbarItem Command="{Binding ExportDatabaseCommand}" Text="Report">
             <ToolbarItem.IconImageSource>
                 <FontImageSource
                     FontFamily="{StaticResource FontAwesomeSolidFree}"
@@ -38,8 +31,10 @@
                 ItemDisplayBinding="{Binding Name}"
                 ItemsSource="{Binding CurrentInterruption.SubStation.Feeders}"
                 SelectedItem="{Binding CurrentInterruption.Feeder}" />
-            <Label Text="Date" />
-            <DatePicker Date="{Binding CurrentInterruption.ReportedDate}" />
+            <Label Text="From Date" />
+            <DatePicker Date="{Binding FromDate}" />
+            <Label Text="To Date" />
+            <DatePicker Date="{Binding ToDate}" />
             <Label Text="Interruption Type" />
             <Grid ColumnSpacing="0" HeightRequest="40">
                 <Grid.ColumnDefinitions>
@@ -110,24 +105,6 @@
                     VerticalOptions="FillAndExpand"
                     VerticalTextAlignment="Center" />
             </Grid>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Label Text="From Time" />
-                <TimePicker Grid.Row="1" Time="{Binding CurrentInterruption.ReportTimeFrom}" />
-                <Label Grid.Column="1" Text="To Time" />
-                <TimePicker
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Time="{Binding CurrentInterruption.ReportTimeTo}" />
-            </Grid>
-            <Editor Placeholder="Comment" Text="{Binding CurrentInterruption.Comment}" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

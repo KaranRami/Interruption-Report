@@ -1,5 +1,4 @@
-﻿using InterruptionReport.Enum;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,7 +6,6 @@ namespace InterruptionReport.Model
 {
     public class Interruption: BaseModel
     {
-        public long ID { get; set; }
 
         private Subdivision subDivision;
         public Subdivision SubDivision
@@ -15,7 +13,6 @@ namespace InterruptionReport.Model
             get { return subDivision; }
             set { SetProperty(ref subDivision , value); }
         }
-
         private Substation subStation;
         public Substation SubStation
         {
@@ -23,11 +20,11 @@ namespace InterruptionReport.Model
             set { SetProperty(ref subStation, value); }
         }
 
-        private Feeder fider;
-        public Feeder Fider
+        private Feeder feeder;
+        public Feeder Feeder
         {
-            get { return fider; }
-            set { SetProperty(ref fider, value); }
+            get { return feeder; }
+            set { SetProperty(ref feeder, value); }
         }
 
         private DateTime reportedDate;
@@ -37,25 +34,31 @@ namespace InterruptionReport.Model
             set { SetProperty(ref reportedDate, value); }
         }
 
-        private DateTime reportTimeFrom;
-        public DateTime ReportTimeFrom
+        private TimeSpan reportTimeFrom;
+        public TimeSpan ReportTimeFrom
         {
             get { return reportTimeFrom; }
             set { SetProperty(ref reportTimeFrom, value); }
         }
 
-        private DateTime reportTimeTo;
-        public DateTime ReportTimeTo
+        private TimeSpan reportTimeTo;
+        public TimeSpan ReportTimeTo
         {
             get { return reportTimeTo; }
             set { SetProperty(ref reportTimeTo, value); }
         }
 
-        private InterruprionType interruprionType;
-        public InterruprionType InterruprionType
+        private string interruprionType;
+        public string InterruprionType
         {
             get { return interruprionType; }
             set { SetProperty(ref interruprionType, value); }
+        }
+        private string comment;
+        public string Comment
+        {
+            get { return comment; }
+            set { SetProperty(ref comment, value); }
         }
     }
 }

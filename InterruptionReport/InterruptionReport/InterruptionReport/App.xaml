@@ -3,12 +3,52 @@
     x:Class="InterruptionReport.App"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:Converters="clr-namespace:InterruptionReport.Converter"
     xmlns:d="http://xamarin.com/schemas/2014/forms/design"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Application.Resources>
+
+        <Converters:InterruptionTypeDisplayTpyeConverter x:Key="InterruptionTypeDisplayTpye" />
+        <Converters:InterruptionTypeDisplayTextConverter x:Key="InterruptionTypeDisplayText" />
+        <Converters:InterruptionTypeDisplayTextColorConverter x:Key="InterruptionTypeDisplayTextColor" />
+
+        <Color x:Key="PrimaryColor">#2196F3</Color>
+
+        <OnPlatform
+            x:Key="FontAwesomeBrands"
+            x:TypeArguments="x:String"
+            Android="Font Awesome 5 Brands-Regular-400.otf#Regular"
+            iOS="FontAwesome5Brands-Regular" />
+        <OnPlatform
+            x:Key="FontAwesomeSolidFree"
+            x:TypeArguments="x:String"
+            Android="Font Awesome 5 Free-Solid-900.otf#Solid"
+            iOS="FontAwesome5Free-Solid" />
+        <OnPlatform
+            x:Key="FontAwesomeRegularFree"
+            x:TypeArguments="x:String"
+            Android="Font Awesome 5 Free-Regular-400.otf#Regular"
+            iOS="FontAwesome5Free-Regular" />
+
         <Style ApplyToDerivedTypes="True" TargetType="ContentPage">
             <Setter Property="Visual" Value="Material" />
+        </Style>
+
+        <Style ApplyToDerivedTypes="True" TargetType="Entry">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+        </Style>
+        <Style ApplyToDerivedTypes="True" TargetType="Editor">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+        </Style>
+        <Style ApplyToDerivedTypes="True" TargetType="Picker">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+        </Style>
+        <Style ApplyToDerivedTypes="True" TargetType="DatePicker">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+        </Style>
+        <Style ApplyToDerivedTypes="True" TargetType="TimePicker">
+            <Setter Property="BackgroundColor" Value="Transparent" />
         </Style>
     </Application.Resources>
 </Application>

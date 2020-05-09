@@ -10,6 +10,5 @@ namespace InterruptionReport.Model
             get { return subStations; }
             set { SetProperty(ref subStations, value); }
         }
-        //public List<Substation> SubStations { get; set; }
     }
 }

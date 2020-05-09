@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="InterruptionReport.View.ReportsPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="reports"
+    Title="Reports"
+    mc:Ignorable="d">
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="54" />
+                <RowDefinition Height="20" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="54" />
+                <ColumnDefinition Width="20" />
+            </Grid.ColumnDefinitions>
+            <CollectionView
+                Grid.RowSpan="3"
+                Grid.ColumnSpan="3"
+                HorizontalOptions="FillAndExpand"
+                ItemsSource="{Binding Reports}"
+                VerticalOptions="FillAndExpand">
+                <CollectionView.EmptyView>
+                    <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                        <Label
+                            FontFamily="{StaticResource FontAwesomeSolidFree}"
+                            FontSize="42"
+                            HorizontalOptions="Center"
+                            Text="file-csv"
+                            VerticalOptions="Center" />
+                        <Label
+                            HorizontalOptions="Center"
+                            Text="Add new Reports"
+                            VerticalOptions="Center" />
+                    </StackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems Mode="Execute">
+                                    <SwipeItem
+                                        BackgroundColor="Red"
+                                        Command="{Binding BindingContext.DeleteCommand, Source={x:Reference reports}}"
+                                        CommandParameter="{Binding .}"
+                                        Text="Delete">
+                                        <SwipeItem.IconImageSource>
+                                            <FontImageSource
+                                                FontFamily="{StaticResource FontAwesomeRegularFree}"
+                                                Glyph="&#xf2ed;"
+                                                Color="White" />
+                                        </SwipeItem.IconImageSource>
+                                    </SwipeItem>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                            <Grid Padding="20,10" ColumnSpacing="20">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding BindingContext.OpenReportCommand, Source={x:Reference reports}}" CommandParameter="{Binding .}" />
+                                </Grid.GestureRecognizers>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Label
+                                    Grid.RowSpan="2"
+                                    FontAttributes="Bold"
+                                    FontFamily="{StaticResource FontAwesomeSolidFree}"
+                                    FontSize="Large"
+                                    Text="file-csv"
+                                    TextColor="#1d6f42"
+                                    VerticalOptions="CenterAndExpand" />
+                                <Label
+                                    Grid.Column="1"
+                                    FontAttributes="Bold"
+                                    Text="{Binding FileName}" />
+                                <Label
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    FontSize="Small"
+                                    Text="{Binding FileCreatedOn}" />
+                                <Label
+                                    Grid.RowSpan="2"
+                                    Grid.Column="2"
+                                    FontFamily="{StaticResource FontAwesomeSolidFree}"
+                                    Text="share-alt"
+                                    VerticalOptions="FillAndExpand"
+                                    VerticalTextAlignment="Center">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding BindingContext.ShareReportCommand, Source={x:Reference reports}}" CommandParameter="{Binding .}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Grid>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Button
+                Grid.Row="1"
+                Grid.Column="1"
+                BackgroundColor="{StaticResource PrimaryColor}"
+                Command="{Binding PrepareNewReportCommand}"
+                CornerRadius="27"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="FillAndExpand">
+                <Button.ImageSource>
+                    <FontImageSource
+                        FontFamily="{StaticResource FontAwesomeSolidFree}"
+                        Glyph="&#xf067;"
+                        Size="24"
+                        Color="White" />
+                </Button.ImageSource>
+            </Button>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
