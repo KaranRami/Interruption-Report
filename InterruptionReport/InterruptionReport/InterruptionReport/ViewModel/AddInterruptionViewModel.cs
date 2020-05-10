@@ -75,11 +75,6 @@ namespace InterruptionReport.ViewModel
                 UserDialogs.Instance.Toast("Please Select Interruprion Type");
                 return false;
             }
-            //else if (CurrentInterruption.ReportTimeFrom > CurrentInterruption.ReportTimeTo)
-            //{
-            //    UserDialogs.Instance.Toast("To time can not be before from time for Interruption");
-            //    return false;
-            //}
             else if (!string.IsNullOrEmpty(CurrentInterruption.Comment) && CurrentInterruption.Comment.Contains(","))
             {
                 UserDialogs.Instance.Toast("Comment should not contains ',' Please Remove before saving Interruption");

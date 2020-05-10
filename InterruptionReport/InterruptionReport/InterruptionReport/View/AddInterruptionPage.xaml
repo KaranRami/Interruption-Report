@@ -49,6 +49,8 @@
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="30" />
                     <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="30" />
+                    <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
                 <Label
                     FontFamily="{Binding CurrentInterruption.InterruprionType, Converter={StaticResource InterruptionTypeDisplayTpye}, ConverterParameter='TT'}"
@@ -107,6 +109,26 @@
                     HorizontalOptions="FillAndExpand"
                     HorizontalTextAlignment="Start"
                     Text="ESD"
+                    VerticalOptions="FillAndExpand"
+                    VerticalTextAlignment="Center" />
+                <Label
+                    Grid.Column="6"
+                    FontFamily="{Binding CurrentInterruption.InterruprionType, Converter={StaticResource InterruptionTypeDisplayTpye}, ConverterParameter='LC'}"
+                    HorizontalOptions="FillAndExpand"
+                    HorizontalTextAlignment="Start"
+                    Text="{Binding CurrentInterruption.InterruprionType, Converter={StaticResource InterruptionTypeDisplayText}, ConverterParameter='LC'}"
+                    TextColor="{Binding CurrentInterruption.InterruprionType, Converter={StaticResource InterruptionTypeDisplayTextColor}, ConverterParameter='LC'}"
+                    VerticalOptions="FillAndExpand"
+                    VerticalTextAlignment="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding InterruprionTypeChangedCommand}" CommandParameter="LC" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label
+                    Grid.Column="7"
+                    HorizontalOptions="FillAndExpand"
+                    HorizontalTextAlignment="Start"
+                    Text="LC"
                     VerticalOptions="FillAndExpand"
                     VerticalTextAlignment="Center" />
             </Grid>
