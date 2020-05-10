@@ -107,7 +107,7 @@
                     VerticalOptions="FillAndExpand"
                     VerticalTextAlignment="Center" />
                 <Label
-                    Grid.Column="4"
+                    Grid.Column="6"
                     FontFamily="{Binding CurrentInterruption.InterruprionType, Converter={StaticResource InterruptionTypeDisplayTpye}, ConverterParameter='LC'}"
                     HorizontalOptions="FillAndExpand"
                     HorizontalTextAlignment="Start"
@@ -120,7 +120,7 @@
                     </Label.GestureRecognizers>
                 </Label>
                 <Label
-                    Grid.Column="5"
+                    Grid.Column="7"
                     HorizontalOptions="FillAndExpand"
                     HorizontalTextAlignment="Start"
                     Text="LC"
