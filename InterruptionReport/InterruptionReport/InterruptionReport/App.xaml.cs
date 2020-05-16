@@ -25,7 +25,7 @@ namespace InterruptionReport
         public App()
         {
             InitializeComponent();
-            MainPage = new NavigationPage(new AddInterruptionPage());
+            MainPage = new NavigationPage(new AddInterruptionPage("New Interruption"));
         }
 
         protected override void OnStart()

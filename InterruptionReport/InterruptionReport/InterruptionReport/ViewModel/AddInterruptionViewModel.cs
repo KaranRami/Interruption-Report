@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -19,11 +20,23 @@ namespace InterruptionReport.ViewModel
 {
     public class AddInterruptionViewModel : BaseViewModel
     {
-        public AddInterruptionViewModel(ContentPage view) : base(view)
+        public AddInterruptionViewModel(ContentPage view, long interruptionId) : base(view)
         {
+            this.interruptionID = interruptionId;
             Task.Run(async () =>
             {
                 await ReadInputData();
+                if (interruptionId != 0)
+                {
+                    var interruptionDB = await App.Database.GetItemAsync(interruptionId);
+                    CurrentInterruption.Comment = interruptionDB.Comment;
+                    CurrentInterruption.SubStation = CurrentInterruption.SubDivision.SubStations.FirstOrDefault(s => s.Name == interruptionDB.SubStation);
+                    CurrentInterruption.Feeder = CurrentInterruption.SubStation.Feeders.FirstOrDefault(f => f.Name == interruptionDB.Feeder);
+                    CurrentInterruption.InterruprionType = interruptionDB.InterruprionType;
+                    CurrentInterruption.ReportedDate = DateTime.Parse(interruptionDB.ReportedDate);
+                    CurrentInterruption.ReportTimeFrom = interruptionDB.ReportTimeFrom;
+                    CurrentInterruption.ReportTimeTo = interruptionDB.ReportTimeTo;
+                }
             });
         }
 
@@ -113,9 +126,20 @@ namespace InterruptionReport.ViewModel
                     SubDivision = CurrentInterruption.SubDivision.Name,
                     SubStation = CurrentInterruption.SubStation.Name,
                 };
+                if (BaseContent.Title.ToLower() == "edit interruption")
+                {
+                    interruptionDbModel.ID = interruptionID;
+                }
                 await App.Database.SaveItemAsync(interruptionDbModel);
-                ResetInterruption();
-                await BaseContent.DisplayAlert("Save", "Interruption Added successfully", "Ok");
+                if (BaseContent.Title.ToLower() == "edit interruption")
+                {
+                    await BaseContent.Navigation.PopAsync();
+                }
+                else
+                {
+                    ResetInterruption();
+                    await BaseContent.DisplayAlert("Save", "Interruption Added successfully", "Ok");
+                }
             }
             catch (Exception ex)
             {
@@ -129,6 +153,17 @@ namespace InterruptionReport.ViewModel
                 }
             }
 
+        }
+        public ICommand DeleteCommand { get { return new Command(async () => await DeleteCommandEvent()); } }
+        private async Task DeleteCommandEvent()
+        {
+            await App.Database.DeleteItemAsync(interruptionID);
+            await BaseContent.Navigation.PopAsync();
+        }
+        public ICommand ShowRecordsCommand { get { return new Command(async () => await ShowRecordsCommandEvent()); } }
+        private async Task ShowRecordsCommandEvent()
+        {
+            await BaseContent.Navigation.PushAsync(new RecordsPage());
         }
         public ICommand PrepareReportCommand { get { return new Command(async () => await PrepareReportCommandEvent()); } }
         private async Task PrepareReportCommandEvent()
@@ -161,5 +196,6 @@ namespace InterruptionReport.ViewModel
             set { SetProperty(ref currentInterruption, value); }
         }
 
+        long interruptionID = 0;
     }
 }

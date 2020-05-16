@@ -13,9 +13,10 @@ namespace InterruptionReport.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PrepareReportPage : ContentPage
     {
-        public PrepareReportPage()
+        public PrepareReportPage(string title)
         {
             InitializeComponent();
+            Title = title;
             BindingContext = new PrepareReportViewModel(this);
         }
     }
