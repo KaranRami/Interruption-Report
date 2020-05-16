@@ -5,11 +5,36 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:d="http://xamarin.com/schemas/2014/forms/design"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="{Binding CurrentInterruption.SubDivision.Name}"
     Padding="20"
     mc:Ignorable="d">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding PrepareReportCommand}" Text="Report">
+        <ToolbarItem
+            x:Name="tbiDelete"
+            Command="{Binding DeleteCommand}"
+            IsDestructive="True"
+            Text="Delete">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource
+                    FontFamily="{StaticResource FontAwesomeSolidFree}"
+                    Glyph="&#xf1f8;"
+                    Size="24" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem
+            x:Name="tbiRecords"
+            Command="{Binding ShowRecordsCommand}"
+            Text="Records">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource
+                    FontFamily="{StaticResource FontAwesomeSolidFree}"
+                    Glyph="&#xf46d;"
+                    Size="24" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem
+            x:Name="tbiReport"
+            Command="{Binding PrepareReportCommand}"
+            Text="Report">
             <ToolbarItem.IconImageSource>
                 <FontImageSource
                     FontFamily="{StaticResource FontAwesomeSolidFree}"
@@ -17,7 +42,10 @@
                     Size="24" />
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
-        <ToolbarItem Command="{Binding SaveNewInterruptionCommand}" Text="Save">
+        <ToolbarItem
+            x:Name="tbiSave"
+            Command="{Binding SaveNewInterruptionCommand}"
+            Text="Save">
             <ToolbarItem.IconImageSource>
                 <FontImageSource
                     FontFamily="{StaticResource FontAwesomeSolidFree}"

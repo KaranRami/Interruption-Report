@@ -12,8 +12,10 @@
         <Converters:InterruptionTypeDisplayTpyeConverter x:Key="InterruptionTypeDisplayTpye" />
         <Converters:InterruptionTypeDisplayTextConverter x:Key="InterruptionTypeDisplayText" />
         <Converters:InterruptionTypeDisplayTextColorConverter x:Key="InterruptionTypeDisplayTextColor" />
+        <Converters:StringToDateFormatConverter x:Key="StringToDateFormat" />
 
         <Color x:Key="PrimaryColor">#2196F3</Color>
+        <Color x:Key="SeperatorColor">#F2F2F2</Color>
 
         <OnPlatform
             x:Key="FontAwesomeBrands"

@@ -21,6 +21,7 @@ namespace InterruptionReport.ViewModel
     {
         public PrepareReportViewModel(ContentPage view) : base(view)
         {
+
             Task.Run(async () =>
             {
                 await ReadInputData();
@@ -135,7 +136,7 @@ namespace InterruptionReport.ViewModel
                 return true;
             }
         }
-        private async Task<List<InterruptionDbModel>> GetFilteredItems()
+        public async Task<IEnumerable<InterruptionDbModel>> GetFilteredItems()
         {
             var data = await App.Database.GetItemsAsync(FromDate, ToDate, CurrentInterruption.SubStation.Name, CurrentInterruption.Feeder.Name, CurrentInterruption.InterruprionType);
             return data;
@@ -170,94 +171,102 @@ namespace InterruptionReport.ViewModel
             {
                 if (!Validate())
                     return;
-                string filename = await BaseContent.DisplayPromptAsync("Report Name", "Enter Report name to save with", "Save", "Cancel", "Report Name");
-                if (string.IsNullOrEmpty(filename))
+                if (BaseContent.Title.ToLower() == "filter")
                 {
-                    if (filename != null)
-                        UserDialogs.Instance.Toast("Please enter valid report name");
-                    return;
+                    //FilteredRecords = await GetFilteredItems();
+                    await BaseContent.Navigation.PopAsync();
                 }
-                bool permissionGranted = await AskForPermission(new Permissions.StorageWrite());
-                if (permissionGranted)
+                else
                 {
-
-                    string downloadPath = DependencyService.Get<IFileHelper>().GetLocalFilePath(filename.Trim() + ".csv");
-                    if (!string.IsNullOrEmpty(downloadPath))
+                    string filename = await BaseContent.DisplayPromptAsync("Report Name", "Enter Report name to save with", "Save", "Cancel", "Report Name");
+                    if (string.IsNullOrEmpty(filename))
                     {
-                        List<InterruptionDbModel> data = await GetFilteredItems();
-                        double totalMinutes = 0;
-                        List<InterruptionReportModel> items = new List<InterruptionReportModel>();
-                        foreach (var item in data)
+                        if (filename != null)
+                            UserDialogs.Instance.Toast("Please enter valid report name");
+                        return;
+                    }
+                    bool permissionGranted = await AskForPermission(new Permissions.StorageWrite());
+                    if (permissionGranted)
+                    {
+
+                        string downloadPath = DependencyService.Get<IFileHelper>().GetLocalFilePath(filename.Trim() + ".csv");
+                        if (!string.IsNullOrEmpty(downloadPath))
                         {
-                            double timeDifference = item.ReportTimeTo.TotalMinutes - item.ReportTimeFrom.TotalMinutes;
-                            if (timeDifference < 0)
-                                timeDifference = (60 * 24) + timeDifference;
-                            TimeSpan workMin = TimeSpan.FromMinutes(timeDifference);
-                            string workHours = workMin.ToString(@"hh\:mm");
-                            InterruptionReportModel interruptionReport = new InterruptionReportModel()
+                            IEnumerable<InterruptionDbModel> data = await GetFilteredItems();
+                            double totalMinutes = 0;
+                            List<InterruptionReportModel> items = new List<InterruptionReportModel>();
+                            foreach (var item in data)
                             {
-                                Comment = item.Comment,
-                                Feeder = item.Feeder,
-                                InterruprionType = item.InterruprionType,
-                                ReportedDate = DateTime.Parse(item.ReportedDate).ToString("dd/MM/yyyy"),
-                                ReportTimeFrom = item.ReportTimeFrom.ToString(),
-                                ReportTimeTo = item.ReportTimeTo.ToString(),
-                                SubDivision = item.SubDivision,
-                                SubStation = item.SubStation,
-                                Hours = workHours,
+                                double timeDifference = item.ReportTimeTo.TotalMinutes - item.ReportTimeFrom.TotalMinutes;
+                                if (timeDifference < 0)
+                                    timeDifference = (60 * 24) + timeDifference;
+                                TimeSpan workMin = TimeSpan.FromMinutes(timeDifference);
+                                string workHours = workMin.ToString(@"hh\:mm");
+                                InterruptionReportModel interruptionReport = new InterruptionReportModel()
+                                {
+                                    Comment = item.Comment,
+                                    Feeder = item.Feeder,
+                                    InterruprionType = item.InterruprionType,
+                                    ReportedDate = DateTime.Parse(item.ReportedDate).ToString("dd/MM/yyyy"),
+                                    ReportTimeFrom = item.ReportTimeFrom.ToString(),
+                                    ReportTimeTo = item.ReportTimeTo.ToString(),
+                                    SubDivision = item.SubDivision,
+                                    SubStation = item.SubStation,
+                                    Hours = workHours,
+                                };
+                                totalMinutes += timeDifference;
+                                items.Add(interruptionReport);
+                            }
+                            TimeSpan totalWorkMin = TimeSpan.FromMinutes(totalMinutes);
+                            string totalWorkHours = totalWorkMin.ToString(@"hh\:mm");
+                            InterruptionReportModel totalHoursInterruption = new InterruptionReportModel()
+                            {
+                                Hours = totalWorkHours,
                             };
-                            totalMinutes += timeDifference;
-                            items.Add(interruptionReport);
-                        }
-                        TimeSpan totalWorkMin = TimeSpan.FromMinutes(totalMinutes);
-                        string totalWorkHours = totalWorkMin.ToString(@"hh\:mm");
-                        InterruptionReportModel totalHoursInterruption = new InterruptionReportModel()
-                        {
-                            Hours = totalWorkHours,
-                        };
-                        items.Add(totalHoursInterruption);
-                        string jsonData = JsonConvert.SerializeObject(items);
-                        if (!string.IsNullOrEmpty(jsonData))
-                        {
-                            XmlNode xml = JsonConvert.DeserializeXmlNode("{records:{record:" + jsonData + "}}");
-                            XmlDocument xmldoc = new XmlDocument();
-                            //Create XmlDoc Object
-                            xmldoc.LoadXml(xml.InnerXml);
-                            //Create XML Steam 
-                            var xmlReader = new XmlNodeReader(xmldoc);
-                            DataSet dataSet = new DataSet();
-                            //Load Dataset with Xml
-                            dataSet.ReadXml(xmlReader);
-                            //return single table inside of dataset
-                            string csv = ToCSV(dataSet.Tables[0]);
-                            if (!string.IsNullOrEmpty(csv))
+                            items.Add(totalHoursInterruption);
+                            string jsonData = JsonConvert.SerializeObject(items);
+                            if (!string.IsNullOrEmpty(jsonData))
                             {
-                                SaveDataToDownloadFolder(downloadPath, csv);
-                                UserDialogs.Instance.Toast("Database saved to your download folder.");
+                                XmlNode xml = JsonConvert.DeserializeXmlNode("{records:{record:" + jsonData + "}}");
+                                XmlDocument xmldoc = new XmlDocument();
+                                //Create XmlDoc Object
+                                xmldoc.LoadXml(xml.InnerXml);
+                                //Create XML Steam 
+                                var xmlReader = new XmlNodeReader(xmldoc);
+                                DataSet dataSet = new DataSet();
+                                //Load Dataset with Xml
+                                dataSet.ReadXml(xmlReader);
+                                //return single table inside of dataset
+                                string csv = ToCSV(dataSet.Tables[0]);
+                                if (!string.IsNullOrEmpty(csv))
+                                {
+                                    SaveDataToDownloadFolder(downloadPath, csv);
+                                    UserDialogs.Instance.Toast("Database saved to your download folder.");
+                                }
+                                else
+                                {
+                                    await BaseContent.DisplayAlert("Export Database", "Unable to save data to storage.", "Ok");
+                                }
                             }
                             else
                             {
-                                await BaseContent.DisplayAlert("Export Database", "Unable to save data to storage.", "Ok");
+                                await BaseContent.DisplayAlert("Export Database", "Unable to prepare report.", "Ok");
                             }
                         }
                         else
                         {
-                            await BaseContent.DisplayAlert("Export Database", "Unable to prepare report.", "Ok");
+                            await BaseContent.DisplayAlert("Export Database", "Download path is invalid.", "Ok");
                         }
                     }
                     else
                     {
-                        await BaseContent.DisplayAlert("Export Database", "Download path is invalid.", "Ok");
+                        await BaseContent.DisplayAlert("Export Database", "Allow permission to store data, you can chance permissions from settings anytime", "Ok");
                     }
-                }
-                else
-                {
-                    await BaseContent.DisplayAlert("Export Database", "Allow permission to store data, you can chance permissions from settings anytime", "Ok");
                 }
             }
             catch (Exception ex)
             {
-                await BaseContent.DisplayAlert("Export Database", ex.Message, "Ok");
+                await BaseContent.DisplayAlert("Prepare Records", ex.Message, "Ok");
             }
         }
         public ICommand InterruprionTypeChangedCommand { get { return new Command<string>(InterruprionTypeChangedCommandEvent); } }

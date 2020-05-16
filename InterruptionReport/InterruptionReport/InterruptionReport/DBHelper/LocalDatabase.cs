@@ -3,6 +3,7 @@ using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ namespace InterruptionReport.DBHelper
             database.CreateTableAsync<InterruptionDbModel>().Wait();
         }
 
-        public async Task<List<InterruptionDbModel>> GetItemsAsync(DateTime fromDate, DateTime toDate, string subStation, string feeder, string interruptionType)
+        public async Task<IEnumerable<InterruptionDbModel>> GetItemsAsync(DateTime fromDate, DateTime toDate, string subStation, string feeder, string interruptionType)
         {
             if (fromDate != null && toDate != null)
             {
@@ -43,32 +44,33 @@ namespace InterruptionReport.DBHelper
                     stringBuilder.Append(string.Format(" AND [InterruprionType] = '{0}'", interruptionType));
                 }
                 List<InterruptionDbModel> response = await database.QueryAsync<InterruptionDbModel>(stringBuilder.ToString());
-                return response.OrderBy(v => v.ReportedDate, new SqliteDateComparer()).ToList();
+                return response.OrderBy(v => v.ReportedDate, new SqliteDateComparer());
             }
             else
             {
                 List<InterruptionDbModel> response = await database.Table<InterruptionDbModel>().ToListAsync();
-                return response.OrderBy(v => v.ReportedDate, new SqliteDateComparer()).ToList();
+                return response.OrderBy(v => v.ReportedDate, new SqliteDateComparer());
             }
         }
-        //public Task<List<InterruptionDbModel>> GetItemsNotDoneAsync()
-        //{
-        //    return database.QueryAsync<InterruptionDbModel>("SELECT * FROM [InterruptionDbModel] WHERE [Done] = 0");
-        //}
 
         public Task<InterruptionDbModel> GetItemAsync(long id)
         {
-            return database.Table<InterruptionDbModel>().Where(i => i.ID == id).FirstOrDefaultAsync();
+            return database.Table<InterruptionDbModel>().FirstOrDefaultAsync(i => i.ID == id);
         }
 
         public Task<int> SaveItemAsync(InterruptionDbModel item)
         {
-            return database.InsertAsync(item);
+            if (item.ID != 0)
+            {
+                return database.UpdateAsync(item);
+            }
+            else
+                return database.InsertAsync(item);
         }
 
-        public Task<int> DeleteItemAsync(InterruptionDbModel item)
+        public async Task<int> DeleteItemAsync(long itemID)
         {
-            return database.DeleteAsync(item);
+            return await database.DeleteAsync(await GetItemAsync(itemID));
         }
         public async Task<bool> CustomQueryAsync(string query)
         {

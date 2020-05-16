@@ -56,7 +56,7 @@ namespace InterruptionReport.ViewModel
         public ICommand PrepareNewReportCommand { get { return new Command(async () => await PrepareNewReportCommandEvent()); } }
         private async Task PrepareNewReportCommandEvent()
         {
-            await BaseContent.Navigation.PushAsync(new PrepareReportPage());
+            await BaseContent.Navigation.PushAsync(new PrepareReportPage("Generate Report"));
         }
         public ICommand OpenReportCommand { get { return new Command<SavedReport>(async (SavedReport savedReport) => await OpenReportCommandEvent(savedReport)); } }
         private async Task OpenReportCommandEvent(SavedReport savedReport)

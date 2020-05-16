@@ -13,10 +13,20 @@ namespace InterruptionReport.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AddInterruptionPage : ContentPage
     {
-        public AddInterruptionPage()
+        public AddInterruptionPage(string title,long interruptionId=0)
         {
             InitializeComponent();
-            BindingContext = new AddInterruptionViewModel(this);
+            Title = title;
+            if(interruptionId!=0)
+            {
+                ToolbarItems.Remove(tbiReport);
+                ToolbarItems.Remove(tbiRecords);
+            }
+            else
+            {
+                ToolbarItems.Remove(tbiDelete);
+            }
+            BindingContext = new AddInterruptionViewModel(this, interruptionId);
         }
     }
 }
