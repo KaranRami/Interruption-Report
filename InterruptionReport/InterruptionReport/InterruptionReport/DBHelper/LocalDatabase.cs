@@ -31,19 +31,22 @@ namespace InterruptionReport.DBHelper
                 //AND([ReportedDate] <= '{1}' AND[ReportTimeFrom] < '{2}')
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.Append(string.Format("SELECT * FROM [InterruptionDbModel] WHERE ([ReportedDate] = '{0}' AND [ReportTimeFrom] >= '{2}') OR [ReportedDate] > '{0}' INTERSECT SELECT * FROM [InterruptionDbModel] WHERE ([ReportedDate] = '{1}' AND[ReportTimeFrom] < '{2}') OR [ReportedDate] < '{1}'", fromDate.AddDays(-1).ToString("yyyy-MM-dd"), toDate.ToString("yyyy-MM-dd"), new TimeSpan(16, 0, 0)));
+                List<InterruptionDbModel> response = await database.QueryAsync<InterruptionDbModel>(stringBuilder.ToString());
                 if (subStation != "All Substations")
                 {
-                    stringBuilder.Append(string.Format(" AND [SubStation] = '{0}'", subStation));
+                    response = response.Where(r => r.SubStation == subStation).ToList();
+                    //stringBuilder.Append(string.Format(" AND [SubStation] = '{0}'", subStation));
                 }
                 if (feeder != "All Feeders")
                 {
-                    stringBuilder.Append(string.Format(" AND [Feeder] = '{0}'", feeder));
+                    response = response.Where(r => r.Feeder == feeder).ToList();
+                    //stringBuilder.Append(string.Format(" AND [Feeder] = '{0}'", feeder));
                 }
                 if (!string.IsNullOrEmpty(interruptionType))
                 {
-                    stringBuilder.Append(string.Format(" AND [InterruprionType] = '{0}'", interruptionType));
+                    response = response.Where(r => r.InterruprionType == interruptionType).ToList();
+                    //stringBuilder.Append(string.Format(" AND [InterruprionType] = '{0}'", interruptionType));
                 }
-                List<InterruptionDbModel> response = await database.QueryAsync<InterruptionDbModel>(stringBuilder.ToString());
                 return response.OrderBy(v => v.ReportedDate, new SqliteDateComparer());
             }
             else
